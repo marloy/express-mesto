@@ -1,11 +1,7 @@
 const router = require('express').Router();
+const { getCards, getOneCard } = require('../controllers/cards');
 
-router.get('/cards', (req, res) => {
-  res.send('Карточки');
-});
-
-router.get('/cards/:_id', (req, res) => {
-  res.send(`Карточка с id ${req.params._id}`);
-});
+router.get('/cards', getCards);
+router.get('/cards/:_id', getOneCard);
 
 module.exports = router;
