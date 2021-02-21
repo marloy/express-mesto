@@ -7,8 +7,8 @@ const getCards = (req, res) => getDataFromFile(dataPath)
   .then((cards) => {
     res.status(200).send(cards);
   })
-  .catch((err) => {
-    res.status(500).send(err);
+  .catch(() => {
+    res.status(500).send({ message: 'Ошибка на сервере' });
   });
 
 const getOneCard = (req, res) => getDataFromFile(dataPath)
@@ -20,8 +20,8 @@ const getOneCard = (req, res) => getDataFromFile(dataPath)
 
     res.status(200).send(card);
   })
-  .catch((err) => {
-    res.status(500).send(err);
+  .catch(() => {
+    res.status(500).send({ message: 'Ошибка на сервере' });
   });
 
 module.exports = {
