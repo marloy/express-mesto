@@ -20,9 +20,8 @@ const getUserById = (req, res) => {
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.status(201).send({ data: user }))
+    .then((user) => res.status(201).send(user))
     .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
-  res.status(200).send({ message: 'ok' });
 };
 
 module.exports = {
