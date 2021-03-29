@@ -20,8 +20,30 @@ const deleteCard = (req, res) => {
     .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
 };
 
+const likeCard = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
+    { new: true },
+  )
+    .then((card) => res.status(200).send(card))
+    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
+};
+
+const dislikeCard = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } }, // убрать _id из массива
+    { new: true },
+  )
+    .then((card) => res.status(200).send(card))
+    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
+};
+
 module.exports = {
   getCards,
   createCard,
   deleteCard,
+  likeCard,
+  dislikeCard,
 };
