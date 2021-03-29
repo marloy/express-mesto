@@ -24,8 +24,24 @@ const createUser = (req, res) => {
     .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
 };
 
+const updateUser = (req, res) => {
+  const { name, about } = req.body;
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+    .then((user) => res.status(200).send(user))
+    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
+};
+
+const updateUserAvatar = (req, res) => {
+  const { avatar } = req.body;
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
+    .then((user) => res.status(200).send(user))
+    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
+};
+
 module.exports = {
   getUsers,
   getUserById,
   createUser,
+  updateUser,
+  updateUserAvatar,
 };
