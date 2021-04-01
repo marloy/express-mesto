@@ -14,13 +14,14 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 const { PORT = 3000 } = process.env;
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use((req, res, next) => {
   req.user = {
-    _id: '6060ce4ac9a50802087c9d91', // вставьте сюда _id созданного в предыдущем пункте пользователя
+    _id: '6060ce4ac9a50802087c9d91',
   };
   next();
 });
-app.use(bodyParser.json());
 app.use(router);
 app.use((req, res) => {
   res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });

@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema({
       validator(v) {
         return /^https?:\/\/[^\s"]+$/.test(v);
       },
-      message: 'Некорректная ссылка',
     },
   },
 });

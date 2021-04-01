@@ -4,20 +4,42 @@ const getCards = (req, res) => {
   Card.find({})
     .populate('owner')
     .then((cards) => res.status(200).send(cards))
-    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
+    .catch(() => {
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
+    });
 };
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.status(200).send(card))
-    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
+    .catch((err) => {
+      const ERROR_CODE = 400;
+      if (err.name === 'ValidationError') {
+        return res.status(ERROR_CODE).send({ message: 'Введены некорректные данные' });
+      }
+      return res.status(500).send({ message: 'На сервере произошла ошибка' });
+    });
 };
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
+    .orFail(() => {
+      const err = new Error('Карточка с таким id не найдена');
+      err.statusCode = 404;
+      throw err;
+    })
     .then((card) => res.status(200).send(card))
-    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
+    .catch((err) => {
+      const ERROR_CODE = 400;
+      if (err.kind === 'ObjectId') {
+        return res.status(ERROR_CODE).send({ message: 'Невалидный id карточки' });
+      }
+      if (err.statusCode === 404) {
+        return res.status(err.statusCode).send({ message: err.message });
+      }
+      return res.status(500).send({ message: 'На сервере произошла ошибка' });
+    });
 };
 
 const likeCard = (req, res) => {
@@ -27,7 +49,7 @@ const likeCard = (req, res) => {
     { new: true },
   )
     .then((card) => res.status(200).send(card))
-    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
+    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 
 const dislikeCard = (req, res) => {
@@ -37,7 +59,7 @@ const dislikeCard = (req, res) => {
     { new: true },
   )
     .then((card) => res.status(200).send(card))
-    .catch(() => res.status(500).send({ message: 'Ошибка на сервере' }));
+    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 
 module.exports = {
