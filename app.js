@@ -1,8 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const usersRouter = require('./routes/users');
-const cardsRouter = require('./routes/cards');
+const router = require('./routes/index');
 
 const app = express();
 
@@ -22,8 +21,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(bodyParser.json());
-app.use(usersRouter);
-app.use(cardsRouter);
+app.use(router);
 app.use((req, res) => {
   res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
 });
