@@ -42,11 +42,19 @@ const createUser = (req, res) => {
 const updateUser = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+    .orFail(() => {
+      const err = new Error('Пользователь с таким id не найден');
+      err.statusCode = 404;
+      throw err;
+    })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       const ERROR_CODE = 400;
       if (err.name === 'ValidationError') {
         return res.status(ERROR_CODE).send({ message: 'Введены некорректные данные' });
+      }
+      if (err.statusCode === 404) {
+        return res.status(err.statusCode).send({ message: err.message });
       }
       return res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
@@ -55,11 +63,19 @@ const updateUser = (req, res) => {
 const updateUserAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
+    .orFail(() => {
+      const err = new Error('Пользователь с таким id не найден');
+      err.statusCode = 404;
+      throw err;
+    })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       const ERROR_CODE = 400;
       if (err.name === 'ValidationError') {
         return res.status(ERROR_CODE).send({ message: 'Введены некорректные данные' });
+      }
+      if (err.statusCode === 404) {
+        return res.status(err.statusCode).send({ message: err.message });
       }
       return res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
