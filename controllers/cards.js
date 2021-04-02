@@ -48,8 +48,22 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
+    .orFail(() => {
+      const err = new Error('Карточка с таким id не найдена');
+      err.statusCode = 404;
+      throw err;
+    })
     .then((card) => res.status(200).send(card))
-    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
+    .catch((err) => {
+      const ERROR_CODE = 400;
+      if (err.kind === 'ObjectId') {
+        return res.status(ERROR_CODE).send({ message: 'Невалидный id карточки' });
+      }
+      if (err.statusCode === 404) {
+        return res.status(err.statusCode).send({ message: err.message });
+      }
+      return res.status(500).send({ message: 'На сервере произошла ошибка' });
+    });
 };
 
 const dislikeCard = (req, res) => {
@@ -58,8 +72,22 @@ const dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
+    .orFail(() => {
+      const err = new Error('Карточка с таким id не найдена');
+      err.statusCode = 404;
+      throw err;
+    })
     .then((card) => res.status(200).send(card))
-    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
+    .catch((err) => {
+      const ERROR_CODE = 400;
+      if (err.kind === 'ObjectId') {
+        return res.status(ERROR_CODE).send({ message: 'Невалидный id карточки' });
+      }
+      if (err.statusCode === 404) {
+        return res.status(err.statusCode).send({ message: err.message });
+      }
+      return res.status(500).send({ message: 'На сервере произошла ошибка' });
+    });
 };
 
 module.exports = {
